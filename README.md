@@ -1,4 +1,4 @@
-# SC2006-SoftwareEng-School4U
+# SC3040-SoftwareEng-School4U
 
 **School4U** - A comprehensive web application designed to help students and parents find the right school in Singapore. This platform simplifies the school selection process by providing detailed information about schools, including programs, CCAs, and location-based recommendations.
 
@@ -43,16 +43,16 @@ Before running this project, make sure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/AtariGoh/SC2006-SoftwareEng-School4U.git
-cd SC2006-SoftwareEng-School4U
+git clone https://github.com/AtariGoh/SC3040-SoftwareEng-School4U.git
+cd SC3040-SoftwareEng-School4U
 ```
 
 ### 2. Set Up Environment Variables
 
-Create a `.env` file in the `SC2006/Backend` directory:
+Create a `.env` file in the `SC3040/Backend` directory:
 
 ```bash
-cd SC2006/Backend
+cd SC3040/Backend
 touch .env
 ```
 
@@ -77,7 +77,7 @@ PORT=5001
 
 #### Install Frontend Dependencies
 ```bash
-cd SC2006
+cd SC3040
 npm install
 ```
 
@@ -93,7 +93,7 @@ You'll need to run both the frontend and backend servers simultaneously. Open **
 
 #### Terminal 1 - Start Backend Server
 ```bash
-cd SC2006/Backend
+cd SC3040/Backend
 npm start
 # or for development with auto-restart:
 npm run dev
@@ -102,7 +102,7 @@ The backend server will start on **http://localhost:5001**
 
 #### Terminal 2 - Start Frontend Server
 ```bash
-cd SC2006
+cd SC3040
 npm run dev
 ```
 The frontend development server will start on **http://localhost:5173** (or another port if 5173 is occupied)
@@ -114,8 +114,8 @@ Open your web browser and navigate to the frontend URL (usually **http://localho
 ## 📁 Project Structure
 
 ```
-SC2006-SoftwareEng-School4U/
-├── SC2006/                          # Frontend (React + Vite)
+SC3040-SoftwareEng-School4U/
+├── SC3040/                          # Frontend (React + Vite)
 │   ├── src/
 │   │   ├── components/              # Reusable React components
 │   │   ├── pages/                   # Page components
@@ -237,7 +237,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🤝 Team
 
-Developed as part of SC2006 Software Engineering course at NTU.
+Developed as part of SC3040 Software Engineering course at NTU.
 
 ## 📞 Support
 
