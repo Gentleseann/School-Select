@@ -23,12 +23,25 @@ const SearchSchools = () => {
 
   // Filter-related state
   const [filtersVisible, setFiltersVisible] = useState(false);
-  const [level, setLevel] = useState("");
+  const [level, setLevel] = useState("All");     // <-- was ""
   const [programme, setProgramme] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("All"); // <-- was ""
   const [sortBy, setSortBy] = useState("name-asc");
 
+
   const SCHOOLS_PER_PAGE = 10;
+
+  const buildParams = () => {
+  const p = new URLSearchParams();
+  if (query)        p.set("query", query);
+  if (level !== "All")    p.set("level", level);        // exact match only when not All
+  if (programme)    p.set("programme", programme);
+  if (location !== "All") p.set("location", location);  // exact match only when not All
+  p.set("sort", sortBy);
+  p.set("page", String(page));
+  p.set("limit", String(SCHOOLS_PER_PAGE));
+  return p;
+};
 
   const fetchSchools = async (reset = false) => {
     try {
@@ -36,16 +49,8 @@ const SearchSchools = () => {
       setError(null);
 
       // Build query parameters
-      const queryParams = new URLSearchParams({
-        query,
-        level,
-        programme,
-        location,
-        sortBy,
-        page,
-        limit: SCHOOLS_PER_PAGE,
-      });
-
+      const queryParams = buildParams();
+      
       // Fetch data from the server
       const response = await axios.get(
         `http://localhost:5001/api/schools?${queryParams.toString()}`
@@ -59,9 +64,17 @@ const SearchSchools = () => {
 
       // Parse and set school and CCA data from response
       const { schools, ccas, distProgs, subjects, moeprog } = response.data;
-      setResults((prevResults) =>
-        reset ? schools : [...prevResults, ...schools]
-      );
+
+      setResults((prevResults) => {
+        const combined = reset ? schools : [...prevResults, ...schools];
+        combined.sort((a, b) =>
+          sortBy === "name-desc"
+            ? b.school_name.localeCompare(a.school_name)
+            : a.school_name.localeCompare(b.school_name)
+        );
+        return combined;
+      });
+
       setCCAs(ccas);
       setdistProg(distProgs);
       setSubjects(subjects);
@@ -106,12 +119,14 @@ const SearchSchools = () => {
 
   const handleClear = () => {
     setQuery("");
-    setLevel("");
+    setLevel("All");       // <-- All, not empty
     setProgramme("");
-    setLocation("");
+    setLocation("All");    // <-- All, not empty
     setSortBy("name-asc");
+    setPage(1);
     fetchSchools(true);
-  };
+};
+
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -162,27 +177,39 @@ const SearchSchools = () => {
         </div>
 
         {/* Toggleable Filters Section */}
+        
         {filtersVisible && (
           <div className="flex flex-col space-y-4 mb-4 p-4 bg-[#EF5A6F] rounded-md">
             <div className="flex space-x-4">
-              <input
-                type="text"
-                placeholder="Level (Primary, Secondary, Junior College)"
-                value={level}
-                onChange={(e) => setLevel(e.target.value)}
-                className="flex-1 p-2 border border-black rounded-md bg-[#FAEDCE]"
-              />
-              <input
-                type="text"
-                placeholder="Location (North, South, East, West)"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="flex-1 p-2 border border-black rounded-md bg-[#FAEDCE]"
-              />
-            </div>
-          </div>
-        )}
+            {/* Level */}
+            <select
+              value={level}
+              onChange={(e) => setLevel(e.target.value)}
+              className="flex-1 p-2 border border-black rounded-md bg-[#FAEDCE]"
+            >
+              <option value="All">All</option>
+              <option value="Primary">Primary</option>
+              <option value="Secondary">Secondary</option>
+              <option value="Junior College">Junior College</option>
+            </select>
 
+            {/* Location / Region */}
+            <select
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="flex-1 p-2 border border-black rounded-md bg-[#FAEDCE]"
+            >   
+              <option value="All">All</option>
+              <option value="North">North</option>
+              <option value="South">South</option>
+              <option value="East">East</option>
+              <option value="West">West</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+        
         {/* Loading and Error States */}
         {loading && <p className="text-center">Loading schools...</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
